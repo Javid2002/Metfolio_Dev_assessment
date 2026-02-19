@@ -2,13 +2,13 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+RUN npm install -g ts-node typescript
+
 COPY api/package*.json ./
-RUN npm install --include=dev
+RUN npm install
 
 COPY api/tsconfig.json ./
 COPY api/src ./src
 
-RUN npm run build
-
 EXPOSE 3001
-CMD ["node", "dist/index.js"]
+CMD ["ts-node", "--skip-project", "--compiler-options", "{\"module\":\"commonjs\"}", "src/index.ts"]
