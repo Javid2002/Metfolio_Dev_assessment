@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: metfolio
+      POSTGRES_PASSWORD: metfolio
+      POSTGRES_DB: metfolio
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U metfolio']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./api
+    ports:
+      - '3001:3001'
+    environment:
+      DATABASE_URL: postgres://metfolio:metfolio@db:5432/metfolio
+      PORT: 3001
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./web
+    ports:
+      - '5173:5173'
+    environment:
+      VITE_API_URL: http://api:3001
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
