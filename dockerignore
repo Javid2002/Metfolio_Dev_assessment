@@ -1,0 +1,4 @@
+web/
+api/node_modules/
+api/dist/
+*.log
