@@ -8,7 +8,7 @@ RUN npm install --include=dev
 COPY api/tsconfig.json ./
 COPY api/src ./src
 
-RUN npm run build
+RUN npm run build && ls -la dist/
 
 EXPOSE 3001
 CMD ["node", "dist/index.js"]
